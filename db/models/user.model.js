@@ -22,5 +22,8 @@ const userSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 
+userSchema.pre('save', function () {
+    this.password = bcrypt.hashSync(this.password, 8)
+})
 
 export const userModel = mongoose.model('user', userSchema);

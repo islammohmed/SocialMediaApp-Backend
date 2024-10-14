@@ -6,11 +6,10 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
 const signUp = catchError(async (req, res, next) => {
-
     let user = new userModel(req.body)
     let token = jwt.sign({ userId: user._id }, process.env.SECERET_KEY)
     !user && next(new AppError('invalid data', 404))
-    user && res.send({ msg: 'success', token })
+    user && res.send({ msg: 'success', token, user })
     await user.save()
 })
 
@@ -19,10 +18,11 @@ const signIn = catchError(async (req, res, next) => {
     let checkEmail = await userModel.findOne({ email })
     if (!checkEmail) return next(new AppError('emial Not Founded', 404))
     else {
-        let checkPassword = bcrypt.compareSync(password, checkEmail.password)
+        let checkPassword = bcrypt.compare(password, checkEmail.password)
+
         if (!checkPassword) return next(new AppError('passwor incorrect', 401))
         let token = jwt.sign({ userId: checkEmail._id, role: checkEmail.role }, process.env.SECERET_KEY)
-        res.send({ msg: "success", token })
+        res.send({ msg: "success", token, checkEmail })
     }
 })
 const protectedRouter = catchError(async (req, res, next) => {
