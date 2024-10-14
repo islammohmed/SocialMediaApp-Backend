@@ -7,7 +7,6 @@ dotenv.config()
 import cors from 'cors'
 import { AppError } from './src/utils/AppError.js'
 import { globalError } from './src/middleware/globalError.js'
-import { createOnlineOrder } from './src/modules/order/controller/order.js'
 const app = express()
 dbConnection()
 config()
